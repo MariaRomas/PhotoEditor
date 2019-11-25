@@ -6,9 +6,11 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,6 +21,9 @@ public class MainActivity extends AppCompatActivity {
     /*Переменная хранящая путь к загружаемым фотографиям*/
     static String strSDCardPathName = Environment.getExternalStorageDirectory() + "/temp_picture" + "/";
     String mCurrentPhotoPath;
+    String currentImageName;
+    private Uri outputFileUri;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,17 +45,31 @@ public class MainActivity extends AppCompatActivity {
                         photoFile = createImageFile();
                     } catch (IOException ex) { }
 
+                    outputFileUri = Uri.fromFile(photoFile);
                     if (photoFile != null) {
-                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
                         startActivityForResult(takePictureIntent, 1);
+
                     }
+                } else {
+                    Toast.makeText(MainActivity.this, "Произошла ошибка", Toast.LENGTH_SHORT);
                 }
             }
         });
     }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK){
+                Intent intent = new Intent(MainActivity.this, EditImageActivity.class);
+                intent.putExtra("imageUri", outputFileUri.toString());
+                startActivity(intent);
+            }
+        }
+    }
 
     private File createImageFile() throws IOException {
-
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = new File(strSDCardPathName);
@@ -60,7 +79,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    /*Создать папку на телефоне*/
+    /*
+    Создать папку на телефоне
+    */
     public static void createFolder() {
         File folder = new File(strSDCardPathName);
         try {
