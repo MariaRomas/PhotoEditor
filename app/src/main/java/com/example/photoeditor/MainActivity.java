@@ -3,7 +3,9 @@ package com.example.photoeditor;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
@@ -24,13 +26,20 @@ import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
     /*Переменная хранящая путь к загружаемым фотографиям*/
-    static String strSDCardPathName = Environment.getExternalStorageDirectory() + "/temp_picture" + "/";
-    String mCurrentPhotoPath;
-    String currentImageName;
+    final private static String strSDCardPathName = Environment.getExternalStorageDirectory() + "/temp_picture" + "/";
     private Uri outputFileUri;
 
-    //
+    //ID приложения для shared preferences
+    private static final String appID = "PhotoEditor";
+    //код для запроса разрешений
     private static final int REQUEST_PERMISSIONS = 111;
+
+    //Код возвращаемый активити выбора файлов
+    private static final int REQUEST_PICK_IMAGE = 112;
+
+    //Код возвращаемый активити после создания фото
+    private static final int REQUEST_IMAGE_CAPTURE = 113;
+
     //Разрешения для записи и чтения
     private static final String[] PERMISSONS = {
         Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -49,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         TextView txtView = findViewById(R.id.text);
-        txtView.setText(strSDCardPathName);
         createFolder();
 
         final Button btnTakePhoto = findViewById(R.id.btnTakePhoto);
@@ -59,50 +67,80 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 /*Переход в режим камеры*/
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                File photoFile = null;
-                try {
-                    photoFile = createImageFile();
-                } catch (IOException ex) { }
 
-                outputFileUri = Uri.fromFile(photoFile);
-                if (photoFile != null) {
+                if(takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                    File photoFile = createImageFile();
+                    outputFileUri = Uri.fromFile(photoFile);
+                    SharedPreferences myPrefs = getSharedPreferences(appID, 0);
+                    myPrefs.edit().putString("path", photoFile.getAbsolutePath()).apply();
+                    //Сделать фото
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-                    startActivityForResult(takePictureIntent, 1);
+                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
 
+                }else {
+                    Toast.makeText(MainActivity.this, "Произошла ошибка с приложением камеры", Toast.LENGTH_SHORT).show();
                 }
-
-                //Toast.makeText(MainActivity.this, "Произошла ошибка", Toast.LENGTH_SHORT);
 
             }
         });
 
         btnSelectImage.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("image/*");
 
+                Intent pickIntent = new Intent(Intent.ACTION_PICK);
+                pickIntent.setDataAndType(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+
+                Intent chooserIntent = Intent.createChooser(intent, "Select image");
+                startActivityForResult(chooserIntent, REQUEST_PICK_IMAGE);
             }
         });
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1) {
-            if (resultCode == RESULT_OK){
-                Intent intent = new Intent(MainActivity.this, EditImageActivity.class);
-                intent.putExtra("imageUri", outputFileUri.toString());
-                startActivity(intent);
-            }
+        if (resultCode != RESULT_OK){
+            return;
         }
+
+        if (requestCode == REQUEST_IMAGE_CAPTURE) {
+
+            if (outputFileUri == null){
+                SharedPreferences myprefs = getSharedPreferences(appID, 0);
+                String path = myprefs.getString("path", "");
+                if(path.length() < 1){
+                    recreate();
+                    return;
+                }
+                outputFileUri = Uri.parse("file://" + path);
+            }
+
+            sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, outputFileUri));
+//            Intent intent = new Intent(MainActivity.this, EditImageActivity.class);
+//            intent.putExtra("imageUri", outputFileUri.toString());
+//            startActivity(intent);
+        }else if(data == null){
+            recreate();
+            return;
+        }else if (requestCode == REQUEST_PICK_IMAGE){
+            outputFileUri = data.getData();
+        }
+
+        ProgressDialog dialog = ProgressDialog.show(MainActivity.this, "Загрузка", "Это займет некоторое время", true);
+
+
     }
 
-    private File createImageFile() throws IOException {
+    private File createImageFile() {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = new File(strSDCardPathName);
-        File image = File.createTempFile(imageFileName, ".jpg", storageDir);
-        this.mCurrentPhotoPath = image.getAbsolutePath();
-        return image;
+        String imageFileName = "JPEG_" + timeStamp + ".jpg";
+//        File storageDir = new File(strSDCardPathName);
+//        File image = File.createTempFile(imageFileName, ".jpg", storageDir);
+        return new File(strSDCardPathName + imageFileName);
 
     }
+
 
     /*
     Создать папку на телефоне
