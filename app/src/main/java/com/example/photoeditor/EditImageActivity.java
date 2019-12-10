@@ -20,7 +20,7 @@ public class EditImageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_image);
         Uri imageUri = Uri.parse(intent.getStringExtra("imageUri"));
-        ImageView imgEl = findViewById(R.id.imageView);
+        ImageView imgEl = findViewById(R.id.image_preview);
 
         File image = new File(imageUri.getPath());
         Bitmap myBitmap = BitmapFactory.decodeFile(image.getAbsolutePath());

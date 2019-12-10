@@ -7,68 +7,87 @@
     android:orientation="vertical"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:background="@android:color/background_light">
-    <LinearLayout
+    android:background="@android:color/background_light"
+    tools:context=".EditImageActivity">
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="50dp">-->
+        <!--<ImageView-->
+            <!--android:id="@+id/imgBack"-->
+            <!--android:layout_width="50dp"-->
+            <!--android:layout_height="50dp"-->
+            <!--android:layout_marginStart="56dp"-->
+            <!--android:layout_marginLeft="56dp"-->
+            <!--android:padding="8dp"-->
+            <!--android:src="@drawable/ic_back" />-->
+
+        <!--<ImageView-->
+            <!--android:id="@+id/imgCamera"-->
+            <!--android:layout_width="50dp"-->
+            <!--android:layout_height="50dp"-->
+            <!--android:layout_marginStart="88dp"-->
+            <!--android:layout_marginLeft="88dp"-->
+            <!--android:padding="8dp"-->
+            <!--android:src="@drawable/ic_load"/>-->
+
+        <!--<ImageView-->
+            <!--android:id="@+id/imgClose"-->
+            <!--android:layout_width="50dp"-->
+            <!--android:layout_height="50dp"-->
+            <!--android:layout_marginStart="76dp"-->
+            <!--android:layout_marginLeft="76dp"-->
+            <!--android:padding="8dp"-->
+            <!--android:src="@drawable/ic_exit"/>-->
+    <!--</LinearLayout>-->
+
+    <android.support.design.widget.AppBarLayout
+        android:theme="@style/AppTheme.AppBarOverlay"
+
         android:layout_width="match_parent"
-        android:layout_height="50dp">
-        <ImageView
-            android:id="@+id/imgBack"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginStart="56dp"
-            android:layout_marginLeft="56dp"
-            android:padding="8dp"
-            android:src="@drawable/ic_back" />
+        android:layout_height="wrap_content">
+        
+        <Toolbar
+            android:id="@+id/toolBar"
+            android:background="@android:color/white"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            tools:targetApi="lollipop"></Toolbar>
+    </android.support.design.widget.AppBarLayout>
+    <include layout="@layout/content_edit"/>
 
-        <ImageView
-            android:id="@+id/imgCamera"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginStart="88dp"
-            android:layout_marginLeft="88dp"
-            android:padding="8dp"
-            android:src="@drawable/ic_load"/>
 
-        <ImageView
-            android:id="@+id/imgClose"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginStart="76dp"
-            android:layout_marginLeft="76dp"
-            android:padding="8dp"
-            android:src="@drawable/ic_exit"/>
-    </LinearLayout>
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+    <!--<ImageView-->
+        <!--android:id="@+id/imageView"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="360dp"-->
+        <!--android:scaleType="centerCrop"-->
 
-        app:srcCompat="@drawable/ic_launcher_background" />
+        <!--app:srcCompat="@drawable/ic_launcher_background" />-->
 
-    <LinearLayout
-        android:gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="50dp">
-        <Button
-            android:id="@+id/button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="8dp"
-            android:text="Стили" />
+    <!--<LinearLayout-->
+        <!--android:gravity="center"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="50dp">-->
+        <!--<Button-->
+            <!--android:id="@+id/button"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginStart="8dp"-->
+            <!--android:layout_marginLeft="8dp"-->
+            <!--android:layout_marginTop="8dp"-->
+            <!--android:text="Стили" />-->
 
-        <Button
-            android:id="@+id/button2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:text="Инструменты"/>
-    </LinearLayout>
+        <!--<Button-->
+            <!--android:id="@+id/button2"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="8dp"-->
+            <!--android:layout_marginEnd="8dp"-->
+            <!--android:layout_marginRight="8dp"-->
+            <!--android:text="Инструменты"/>-->
+    <!--</LinearLayout>-->
 
 
 </LinearLayout>
