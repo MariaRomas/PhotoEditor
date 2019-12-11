@@ -1,4 +1,4 @@
-package com.example.photoeditor;
+package com.example.photoeditor.utils;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
