@@ -1,4 +1,4 @@
-package com.example.photoeditor;
+package com.example.photoeditor.interfaces;
 
 public interface EditImageFragmentListener {
     void onBrightnessChanged(int brightness);

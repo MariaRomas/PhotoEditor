@@ -1,4 +1,4 @@
-package com.example.photoeditor;
+package com.example.photoeditor.interfaces;
 
 
 import com.zomato.photofilters.imageprocessors.Filter;

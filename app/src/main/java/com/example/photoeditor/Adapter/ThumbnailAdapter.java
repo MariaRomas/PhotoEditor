@@ -1,7 +1,6 @@
 package com.example.photoeditor.Adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -11,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.photoeditor.FiltersListFragmentListener;
+import com.example.photoeditor.interfaces.FiltersListFragmentListener;
 import com.example.photoeditor.R;
 import com.zomato.photofilters.utils.ThumbnailItem;
 
