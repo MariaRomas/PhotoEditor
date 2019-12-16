@@ -1,7 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/main"
-        android:title="Главная"/>
-    <item android:id="@+id/about"
-        android:title="О приложении"/>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_save"
+        android:orderInCategory="100"
+        app:showAsAction="always"
+        android:enabled = "true"
+        android:title = "SAVE"
+        />
+    <item
+        android:id="@+id/action_open"
+        android:orderInCategory="101"
+        app:showAsAction="always"
+        android:enabled = "true"
+        android:title = "OPEN"
+        />
+
+    <item
+        android:id="@+id/action_close"
+        android:orderInCategory="102"
+        app:showAsAction="always"
+        android:enabled = "true"
+        android:title = "CLOSE"
+        />
 </menu>

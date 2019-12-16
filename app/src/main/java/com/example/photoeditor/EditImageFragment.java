@@ -17,7 +17,7 @@ import com.example.photoeditor.interfaces.EditImageFragmentListener;
  */
 public class EditImageFragment extends Fragment implements SeekBar.OnSeekBarChangeListener {
     private EditImageFragmentListener listener;
-    SeekBar seekbar_brightness, seekbar_constraint, seekbar_saturation;
+    SeekBar seekbar_brightness, seekbar_contrast, seekbar_saturation;
 
     public void setListener(EditImageFragmentListener listener) {
         this.listener = listener;
@@ -39,20 +39,20 @@ public class EditImageFragment extends Fragment implements SeekBar.OnSeekBarChan
         View itemView = inflater.inflate(R.layout.fragment_edit_image, container, false);
 
         seekbar_brightness = itemView.findViewById(R.id.seekbar_brightness);
-        seekbar_constraint = itemView.findViewById(R.id.seekbar_constraint);
+        seekbar_contrast = itemView.findViewById(R.id.seekbar_contrast);
         seekbar_saturation = itemView.findViewById(R.id.seekbar_saturation);
 
         seekbar_brightness.setMax(200);
         seekbar_brightness.setProgress(100);
 
-        seekbar_constraint.setMax(20);
-        seekbar_constraint.setProgress(0);
+        seekbar_contrast.setMax(20);
+        seekbar_contrast.setProgress(0);
 
         seekbar_saturation.setMax(30);
         seekbar_saturation.setProgress(10);
 
         seekbar_brightness.setOnSeekBarChangeListener(this);
-        seekbar_constraint.setOnSeekBarChangeListener(this);
+        seekbar_contrast.setOnSeekBarChangeListener(this);
         seekbar_saturation.setOnSeekBarChangeListener(this);
 
         return itemView;
@@ -63,10 +63,10 @@ public class EditImageFragment extends Fragment implements SeekBar.OnSeekBarChan
         if(listener != null){
             if(seekBar.getId() == R.id.seekbar_brightness){
                 listener.onBrightnessChanged(progress - 100);
-            }else if(seekBar.getId() == R.id.seekbar_constraint){
+            }else if(seekBar.getId() == R.id.seekbar_contrast){
                 progress += 10;
                 float value = .10f * progress;
-                listener.onConstraintChanged(value);
+                listener.onContrastChanged(value);
             }else if(seekBar.getId() == R.id.seekbar_saturation){
                 float value = .10f * progress;
                 listener.onSaturationChanged(value);
@@ -90,7 +90,7 @@ public class EditImageFragment extends Fragment implements SeekBar.OnSeekBarChan
 
     public void resetControls(){
         seekbar_brightness.setProgress(100);
-        seekbar_constraint.setProgress(0);
+        seekbar_contrast.setProgress(0);
         seekbar_saturation.setProgress(10);
     }
 }

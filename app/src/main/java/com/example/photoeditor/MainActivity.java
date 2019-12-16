@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
             outputFileUri = data.getData();
         }
 
-        ProgressDialog dialog = ProgressDialog.show(MainActivity.this, "Загрузка", "Это займет некоторое время", true);
+//        ProgressDialog dialog = ProgressDialog.show(MainActivity.this, "Загрузка", "Это займет некоторое время", true);
 
 
     }
