@@ -17,7 +17,11 @@ import android.widget.Toolbar;
 import com.example.photoeditor.Adapter.ViewPagerAdapter;
 import com.example.photoeditor.interfaces.EditImageFragmentListener;
 import com.example.photoeditor.interfaces.FiltersListFragmentListener;
+import com.example.photoeditor.utils.BitmapUtils;
 import com.zomato.photofilters.imageprocessors.Filter;
+import com.zomato.photofilters.imageprocessors.subfilters.BrightnessSubFilter;
+import com.zomato.photofilters.imageprocessors.subfilters.ContrastSubFilter;
+import com.zomato.photofilters.imageprocessors.subfilters.SaturationSubfilter;
 
 import java.io.File;
 
@@ -71,26 +75,50 @@ public class EditImageActivity extends AppCompatActivity implements FiltersListF
 //        imgEl.setImageBitmap(myBitmap);
     }
 
+    private void loadImage() {
+        originalBitmap = BitmapUtils.getBitmapFromAssets(this, pictureName, 300, 300);
+        filteredBitmap = originalBitmap.copy(Bitmap.Config.ARGB_4444, true);
+        finalBitmap = originalBitmap.copy(Bitmap.Config.ARGB_4444, true);
+        img_preveiw.setImageBitmap(originalBitmap);
+    }
+
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
         filtersListFragment = new FiltersListFragment();
         filtersListFragment.setListener(this);
+
+        editImageFragment = new EditImageFragment();
+        editImageFragment.setListener(this);
+
+        adapter.addFragment(filtersListFragment, "FILTERS");
+        adapter.addFragment(editImageFragment, "EDIT");
+
+        viewPager.setAdapter(adapter);
     }
 
     @Override
     public void onBrightnessChanged(int brightness) {
-
+        brightness_final = brightness;
+        Filter myFilter = new Filter();
+        myFilter.addSubFilter(new BrightnessSubFilter(brightness));
+        img_preveiw.setImageBitmap(myFilter.processFilter(finalBitmap.copy(Bitmap.Config.ARGB_8888, true)));
     }
 
     @Override
     public void onSaturationChanged(float saturation) {
-
+        saturation_final = saturation;
+        Filter myFilter = new Filter();
+        myFilter.addSubFilter(new SaturationSubfilter(saturation));
+        img_preveiw.setImageBitmap(myFilter.processFilter(finalBitmap.copy(Bitmap.Config.ARGB_8888, true)));
     }
 
     @Override
     public void onConstraintChanged(float constraint) {
-
+        constraint_final = constraint;
+        Filter myFilter = new Filter();
+        myFilter.addSubFilter(new ContrastSubFilter(constraint));
+        img_preveiw.setImageBitmap(myFilter.processFilter(finalBitmap.copy(Bitmap.Config.ARGB_8888, true)));
     }
 
     @Override
@@ -100,11 +128,21 @@ public class EditImageActivity extends AppCompatActivity implements FiltersListF
 
     @Override
     public void onEditCompleted() {
+        Bitmap bitmap = filteredBitmap.copy(Bitmap.Config.ARGB_8888, true);
 
+        Filter myFilter = new Filter();
+        myFilter.addSubFilter(new BrightnessSubFilter(brightness_final));
+        myFilter.addSubFilter(new SaturationSubfilter(saturation_final));
+        myFilter.addSubFilter(new ContrastSubFilter(constraint_final));
+
+        finalBitmap = myFilter.processFilter(bitmap);
     }
 
     @Override
     public void onFilterSelected(Filter filter) {
-
+        resetControl();
+        filteredBitmap = originalBitmap.copy(Bitmap.Config.ARGB_8888, true);
+        img_preveiw.setImageBitmap(filter.processFilter(filteredBitmap));
+        finalBitmap = filteredBitmap.copy(Bitmap.Config.ARGB_8888, true);
     }
 }
