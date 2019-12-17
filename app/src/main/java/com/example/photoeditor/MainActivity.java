@@ -7,6 +7,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -71,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
                 if(takePictureIntent.resolveActivity(getPackageManager()) != null) {
                     File photoFile = createImageFile();
                     outputFileUri = Uri.fromFile(photoFile);
+
                     SharedPreferences myPrefs = getSharedPreferences(appID, 0);
                     myPrefs.edit().putString("path", photoFile.getAbsolutePath()).apply();
                     //Сделать фото
@@ -86,14 +88,21 @@ public class MainActivity extends AppCompatActivity {
 
         btnSelectImage.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                Intent intent = new Intent(Intent.ACTION_PICK);
                 intent.setType("image/*");
 
-                Intent pickIntent = new Intent(Intent.ACTION_PICK);
-                pickIntent.setDataAndType(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+//                Intent pickIntent = new Intent(Intent.ACTION_PICK);
+////                Intent intent = new Intent(Intent.ACTION_PICK);
+////                intent.setType("image/*");
+////                startActivityForResult(intent, REQUEST_PICK_IMAGE);
+//                pickIntent.setDataAndType(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
 
-                Intent chooserIntent = Intent.createChooser(intent, "Select image");
-                startActivityForResult(chooserIntent, REQUEST_PICK_IMAGE);
+                startActivityForResult(intent, REQUEST_PICK_IMAGE);
+
+//                Intent actIntent = new Intent(MainActivity.this, EditImageActivity.class);
+//                actIntent.putExtra("imageUri", outputFileUri.toString());
+//                startActivity(actIntent);
+
             }
         });
     }
@@ -117,14 +126,17 @@ public class MainActivity extends AppCompatActivity {
             }
 
             sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, outputFileUri));
-//            Intent intent = new Intent(MainActivity.this, EditImageActivity.class);
-//            intent.putExtra("imageUri", outputFileUri.toString());
-//            startActivity(intent);
+            Intent intent = new Intent(MainActivity.this, EditImageActivity.class);
+            intent.putExtra("imageUri", outputFileUri.toString());
+            startActivity(intent);
         }else if(data == null){
             recreate();
             return;
         }else if (requestCode == REQUEST_PICK_IMAGE){
             outputFileUri = data.getData();
+            Intent intent = new Intent(MainActivity.this, EditImageActivity.class);
+            intent.putExtra("imageUri", outputFileUri.toString());
+            startActivity(intent);
         }
 
 //        ProgressDialog dialog = ProgressDialog.show(MainActivity.this, "Загрузка", "Это займет некоторое время", true);
@@ -184,7 +196,4 @@ public class MainActivity extends AppCompatActivity {
          }
     }
 
-    private void init(){
-
-    }
 }

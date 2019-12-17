@@ -13,12 +13,12 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toolbar;
 
 import com.example.photoeditor.Adapter.ViewPagerAdapter;
 import com.example.photoeditor.interfaces.EditImageFragmentListener;
@@ -30,10 +30,12 @@ import com.zomato.photofilters.imageprocessors.subfilters.ContrastSubFilter;
 import com.zomato.photofilters.imageprocessors.subfilters.SaturationSubfilter;
 
 import java.io.File;
+import java.net.URI;
 
 public class EditImageActivity extends AppCompatActivity implements FiltersListFragmentListener, EditImageFragmentListener {
     final private static String strSDCardPathName = Environment.getExternalStorageDirectory() + "/temp_picture" + "/";
 
+    public static final String pictureName = "video.jpg";
 
     //Код возвращаемый активити выбора файлов
     private static final int REQUEST_PICK_IMAGE = 112;
@@ -62,13 +64,14 @@ public class EditImageActivity extends AppCompatActivity implements FiltersListF
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Intent intent = getIntent();
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_edit_image);
 
         Toolbar toolbar = findViewById(R.id.toolBar);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Редактор");
 
 
         img_preveiw = findViewById(R.id.image_preview);
@@ -76,38 +79,41 @@ public class EditImageActivity extends AppCompatActivity implements FiltersListF
         viewPager = findViewById(R.id.viewpager);
         coordinatorLayout = findViewById(R.id.coordinator);
 
-        loadImage();
+        Intent intent = getIntent();
+        String stringUri = intent.getStringExtra("imageUri");
+        Uri imageUri = Uri.parse(stringUri);
+
+//        File image = new File(imageUri.getPath());
+//        Bitmap myBitmap = BitmapFactory.decodeFile(image.getAbsolutePath());
+//        img_preveiw.setImageBitmap(myBitmap);
+//        setImageFromGallery(imageUri);
+
+//        loadImage();
 
         setupViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager);
-//        setContentView(R.layout.activity_edit_image);
-//        Uri imageUri = Uri.parse(intent.getStringExtra("imageUri"));
-//        ImageView imgEl = findViewById(R.id.image_preview);
-//
-//        File image = new File(imageUri.getPath());
-//        Bitmap myBitmap = BitmapFactory.decodeFile(image.getAbsolutePath());
-//
-//        imgEl.setImageBitmap(myBitmap);
+
+//        setImageFromGallery(imageUri);
     }
 
     private void loadImage() {
         originalBitmap = BitmapUtils.getBitmapFromAssets(this, pictureName, 300, 300);
-        filteredBitmap = originalBitmap.copy(Bitmap.Config.ARGB_4444, true);
-        finalBitmap = originalBitmap.copy(Bitmap.Config.ARGB_4444, true);
+        filteredBitmap = originalBitmap.copy(Bitmap.Config.ARGB_8888, true);
+        finalBitmap = originalBitmap.copy(Bitmap.Config.ARGB_8888, true);
         img_preveiw.setImageBitmap(originalBitmap);
     }
-
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
         filtersListFragment = new FiltersListFragment();
+
         filtersListFragment.setListener(this);
 
         editImageFragment = new EditImageFragment();
         editImageFragment.setListener(this);
 
-        adapter.addFragment(filtersListFragment, "FILTERS");
-        adapter.addFragment(editImageFragment, "EDIT");
+        adapter.addFragment(filtersListFragment, "ФИЛЬТРЫ");
+        adapter.addFragment(editImageFragment, "ИНСТРУМЕНТЫ");
 
         viewPager.setAdapter(adapter);
     }
@@ -190,9 +196,6 @@ public class EditImageActivity extends AppCompatActivity implements FiltersListF
             return true;
         }
 
-        if(id == R.id.action_close){
-
-        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -227,24 +230,52 @@ public class EditImageActivity extends AppCompatActivity implements FiltersListF
         startActivityForResult(intent, REQUEST_PICK_IMAGE);
     }
 
+    private void setImageFromGallery(Uri uri){
+        Bitmap bitmap = BitmapUtils.getBitmapFromGallery(this, uri, 800, 800);
+
+        originalBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+        finalBitmap = originalBitmap.copy(Bitmap.Config.ARGB_8888, true);
+        filteredBitmap = originalBitmap.copy(Bitmap.Config.ARGB_8888, true);
+
+//        originalBitmap.recycle();
+//        finalBitmap.recycle();
+//        filteredBitmap.recycle();
+
+        img_preveiw.setImageBitmap(originalBitmap);
+        bitmap.recycle();
+
+        filtersListFragment.displayThumbnail(originalBitmap);
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (resultCode == RESULT_OK){
 
-        if(requestCode == RESULT_OK && requestCode == REQUEST_PICK_IMAGE){
-            Bitmap bitmap = BitmapUtils.getBitmapFromGallery(this, data.getData(), 800, 800);
+            if(requestCode == REQUEST_PICK_IMAGE){
 
-            originalBitmap.recycle();
-            finalBitmap.recycle();
-            filteredBitmap.recycle();
+                Bitmap bitmap = BitmapUtils.getBitmapFromGallery(this, data.getData(), 800, 800);
 
-            originalBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
-            finalBitmap = originalBitmap.copy(Bitmap.Config.ARGB_8888, true);
-            filteredBitmap = originalBitmap.copy(Bitmap.Config.ARGB_8888, true);
+                if(originalBitmap != null){
+                    originalBitmap.recycle();
+                }
 
-            img_preveiw.setImageBitmap(originalBitmap);
-            bitmap.recycle();
+                if(finalBitmap != null){
+                    finalBitmap.recycle();
+                }
 
-            filtersListFragment.displayThumbnail(originalBitmap);
+                if(filteredBitmap != null){
+                    filteredBitmap.recycle();
+                }
+
+                originalBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+                finalBitmap = originalBitmap.copy(Bitmap.Config.ARGB_8888, true);
+                filteredBitmap = originalBitmap.copy(Bitmap.Config.ARGB_8888, true);
+
+                img_preveiw.setImageBitmap(originalBitmap);
+                bitmap.recycle();
+
+                filtersListFragment.displayThumbnail(originalBitmap);
+            }
         }
+
     }
 }

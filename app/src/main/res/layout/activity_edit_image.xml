@@ -46,14 +46,15 @@
 
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        
-        <Toolbar
+
+        <android.support.v7.widget.Toolbar
             android:id="@+id/toolBar"
             android:background="@android:color/white"
             app:popupTheme="@style/AppTheme.PopupOverlay"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             tools:targetApi="lollipop"/>
+
     </android.support.design.widget.AppBarLayout>
     <include layout="@layout/content_edit"/>
 

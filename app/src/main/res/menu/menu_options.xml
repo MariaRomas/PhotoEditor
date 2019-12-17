@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
@@ -9,21 +7,21 @@
         android:orderInCategory="100"
         app:showAsAction="always"
         android:enabled = "true"
-        android:title = "SAVE"
+        android:title = "Сохранить"
         />
     <item
         android:id="@+id/action_open"
         android:orderInCategory="101"
         app:showAsAction="always"
         android:enabled = "true"
-        android:title = "OPEN"
+        android:title = "Открыть"
         />
 
-    <item
-        android:id="@+id/action_close"
-        android:orderInCategory="102"
-        app:showAsAction="always"
-        android:enabled = "true"
-        android:title = "CLOSE"
-        />
+    <!--<item-->
+        <!--android:id="@+id/action_close"-->
+        <!--android:orderInCategory="102"-->
+        <!--app:showAsAction="always"-->
+        <!--android:enabled = "true"-->
+        <!--android:title = "CLOSE"-->
+        <!--/>-->
 </menu>

@@ -1,6 +1,7 @@
 package com.example.photoeditor;
 
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -76,7 +77,8 @@ public class FiltersListFragment extends Fragment implements FiltersListFragment
             public void run() {
                 Bitmap thumbImg;
                 if(bitmap == null){
-                    thumbImg = BitmapUtils.getBitmapFromAssets(getActivity(), "flash.jpg", 100, 100);
+//                    thumbImg = BitmapUtils.getBitmapFromAssets(getActivity(), EditImageActivity.pictureName, 100, 100);
+                    thumbImg = null;
                 }else {
                     thumbImg = Bitmap.createScaledBitmap(bitmap, 100, 100, false);
                 }
@@ -85,7 +87,9 @@ public class FiltersListFragment extends Fragment implements FiltersListFragment
                     return;
                 }
                 ThumbnailsManager.clearThumbs();
-                thumbnailItems.clear();
+                if(thumbnailItems != null){
+                    thumbnailItems.clear();
+                }
 
                 ThumbnailItem thumbnailItem = new ThumbnailItem();
                 thumbnailItem.image = thumbImg;
@@ -120,4 +124,5 @@ public class FiltersListFragment extends Fragment implements FiltersListFragment
             listener.onFilterSelected(filter);
         }
     }
+
 }
